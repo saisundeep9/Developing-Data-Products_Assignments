@@ -1,0 +1,51 @@
+---
+title: "Using R Markdown to create a webpage with Leaflet"
+author: "Dr.Sundeep Deulkar"
+date: "14/01/2021"
+output: pdf_document
+---
+## Loading the leaflet library and the data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(leaflet)
+library(htmltools)
+setwd("E:/CDACDATASCIENCE/Data Science Course 9")
+Restrank <- read.csv(file = "TheWorlds50BestRestaurants2018.csv", header = TRUE, sep = ",")
+```
+
+## Creating the dataframe from the dataset
+```{r setup, include=FALSE}
+
+mymap <- data.frame(Ranking = Restrank$Ranking,
+                     Name = Restrank$Name,
+                     City = Restrank$City,
+                     Country = Restrank$Country,
+                     Latitude = Restrank$Latitude,
+                     Longitude = Restrank$Longitude
+                     )
+
+```
+
+## Activating the Map inside Leaflet using piping operator
+
+```{r setup, include=FALSE}
+
+map <- mymap %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(popup=paste
+             ("<br>Country: ", 
+               htmlEscape(Restrank$Country), 
+              "<br>City: ", 
+               htmlEscape(Restrank$City), 
+              "<br>Restaurant: ", 
+               htmlEscape(Restrank$Name),
+              "<br>Ranking: ",
+               formatC(Restrank$Ranking, format = "d", big.mark = ",")
+              ) 
+            )
+map
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
